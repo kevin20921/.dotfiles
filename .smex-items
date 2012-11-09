@@ -1,0 +1,26 @@
+
+;; ----- smex-history -----
+(
+ load-file
+ indent-region
+ dired
+ package-install
+ whitespace-cleanup
+ package-list-packages
+ load-theme
+)
+
+;; ----- smex-data -----
+(
+ (package-install . 28)
+ (load-theme . 2)
+ (occur . 1)
+ (dired . 3)
+ (php-mode . 1)
+ (package-list-packages . 1)
+ (load-file . 8)
+ (recentf-open-files . 1)
+ (indent-region . 3)
+ (whitespace-cleanup . 2)
+ (ack-and-a-half . 1)
+)

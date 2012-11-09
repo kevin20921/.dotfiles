@@ -1,0 +1,60 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/home/kevin/app/work/depot/app/" . "controllers/")
+ ("/home/kevin/app/work/" . "depot/")
+ ("/home/kevin/app/" . "work/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ "/home/kevin/.emacs.d/"
+ "/home/kevin/.emacs.d/rmm5t/"
+ "/home/kevin/app/work/depot/"
+ "/home/kevin/app/work/depot/app/controllers/"
+ "/home/kevin/"
+ "/home/kevin/app/work/"
+)
+
+;; ----- ido-work-file-list -----
+(
+ "init.el"
+ "defuns.el"
+ "ido.el"
+ "bindings.el"
+ "Gemfile"
+ "products_controller.rb"
+ "test.php"
+ "depot.org"
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/home/kevin/.emacs.d/" (20637 10644) "places" "./" "init.el" "backups/" "elpa/" "auto-save-list/" ".smex-items" "../")
+
+ ("/home/kevin/" (20637 10644) ".zprofile" ".FBReader/" "Music/" ".bash_aliases" ".vimshell/" ".gstreamer-0.10/" "tmp/" ".thunderbird/" "Dropbox/" ".ido.last" ".mysql/" ".dotfiles/" ".bash_history" ".git-credential-cache/" ".NERDTreeBookmarks" ".bash_completion" ".kde4/" ".tmux.conf" ".autotest.d/" ".gem/" ".emacs.d_bakk/" ".pulse/" ".ssh/" ".appcfg_nag" ".ctags" ".cache/" "Desktop/" ".subversion/" ".thumbnails/" "app/" ".emacs.d/" "./" ".mplayer/" ".macromedia/" ".pulse-cookie" ".Xauthority" ".mysql_history" ".bashrc" "backup/" ".ICEauthority" ".zshenv" ".lesshst" ".local/" ".gemrc" ".sake" ".hgrc" ".bash_profile" ".gnupg/" ".ackrc" ".bash_logout" ".gtk-bookmarks" ".gconf/" ".dropbox/" ".gitconfig" ".purple/" ".rvm/" ".autotest" ".gitignore" ".vimperatorrc" ".recentf" ".vim/" ".screenrc" ".pki/" ".rvmrc" ".GrooveWalrus/" ".cmd-key-happy.lua" ".mozilla/" "Downloads/" ".appcfg_cookies" ".config/" ".vimrc" ".adobe/" ".stardict/" ".viminfo" ".irbrc" "../" ".filezilla/")
+
+ ("/home/kevin/.emacs.d/rmm5t/" (20637 9795) "shell-mode.el" "org.el" "ruby-mode.el" "rinari.el" "yasnippet.el" "ido.el" ".#env.el" "#env.el#" "utf-8.el" "fonts.el" "./" "magit.el" "lua-mode.el" "markdown-mode.el" "yaml-mode.el" "js2-mode.el" "javascript.el" "ri-emacs.el" "tabs.el" "bindings.el" "defuns.el" "../")
+
+ ("/home/kevin/app/work/depot/app/views/" (20635 61081) "products/" "./" "layouts/" "../")
+
+ ("/home/kevin/app/work/depot/app/views/products/" (20635 62497) "index.html.erb" "new.html.erb" "_form.html.erb" "./" "show.html.erb" "edit.html.erb" "../")
+
+ ("/home/kevin/app/work/depot/public/" (20635 61006) "500.html" "robots.txt" "./" "404.html" "422.html" "favicon.ico" "../" "index.html")
+
+ ("/home/kevin/.dotfiles/" (20637 6925) ".git/" "vimrc" "gemrc" "install.rb" "ackrc" "hgrc" "README.md" "bashrc" "bash_aliases" "ctags" "screenrc" "vimperatorrc" "autotest" "./" "autotest.d/" "gitignore" "bash_completion" "gitconfig" "emacs.d/" "irbrc" "emacs" "tmux.conf" ".gitmodules" "cmd-key-happy.lua" ".gitignore" "bash_profile" "sake" "../")
+
+ ("/home/kevin/app/work/" (20637 3544) ".git/" "README.md" "depot.org" "./" "depot/" ".gitignore" "demo/" "../")
+
+ ("/home/kevin/app/work/depot/app/controllers/" (20637 3109) "./" "products_controller.rb" "application_controller.rb" "../")
+
+ ("/home/kevin/app/work/depot/app/" (20635 61006) "helpers/" "views/" "assets/" "./" "mailers/" "controllers/" "models/" "../")
+
+ ("/home/kevin/app/work/depot/" (20635 61124) "tmp/" "README.rdoc" "Rakefile" "public/" "db/" "Gemfile.lock" "app/" "./" "Gemfile" "vendor/" "lib/" "test/" "doc/" "script/" "config/" ".gitignore" "log/" "config.ru" "../")
+
+ ("/home/kevin/app/" (20637 452) "dev2/" "admin/" "work/" "./" "ruby-china/" "../")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t

@@ -1,0 +1,385 @@
+(require 'package)
+(add-to-list 'package-archives
+             '("marmalade" . "http://marmalade-repo.org/packages/") t)
+(package-initialize)
+
+;;; Gotta do UTF-8
+
+(require 'un-define "un-define" t)
+(set-buffer-file-coding-system 'utf-8 'utf-8-unix)
+(set-default buffer-file-coding-system 'utf-8-unix)
+(set-default-coding-systems 'utf-8-unix)
+(prefer-coding-system 'utf-8-unix)
+(set-default default-buffer-file-coding-system 'utf-8-unix)
+
+;; color theme
+(load-theme 'zenburn t)
+
+;; recentf stuff
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 25)
+(global-set-key (kbd "C-x C-r") 'recentf-open-files)
+
+;;; Interactive do, find-file and iswitchb replacement with fuzzy/flex
+;;; matching.
+
+(ido-mode t)
+(setq ido-enable-flex-matching t) ; fuzzy matching is a must have
+(setq ido-enable-last-directory-history nil) ; forget latest selected
+                                        ; directory names
+;;; Javscript is fun
+
+;; Standard js-mode
+(setq js-indent-level 2)
+
+;; js2-mode
+
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
+(setq js2-cleanup-whitespace t)
+(setq js2-basic-offset 2)
+(setq js2-bounce-indent-p t)
+
+;; Special improvements using the mooz fork
+;; https://github.com/mooz/js2-mode
+(setq js2-consistent-level-indent-inner-bracket-p t)
+(setq js2-use-ast-for-indentation-p t)
+
+;;; It's Magit! An Emacs mode for Git.
+
+(add-hook
+ 'magit-mode-hook
+ (lambda ()
+   (setq yas/dont-activate t)))
+
+(add-hook
+ 'magit-log-edit-mode-hook
+ (lambda ()
+   (setq fill-column 72)
+   (turn-on-auto-fill)))
+
+(eval-after-load 'magit
+  '(progn
+     (set-face-background 'highlight nil) ;; highlight is overriding
+     ;; other background colors for diff chunks
+     (set-face-foreground 'highlight nil) ;; highlight is overriding
+     ;; other foreground colors for diff chunks
+     (set-face-underline  'highlight nil)
+     (define-key magit-mode-map (kbd "M-3") 'split-window-horizontally) ; was magit-show-level-3
+     (define-key magit-mode-map (kbd "M-2") 'split-window-vertically)   ; was magit-show-level-2
+     (define-key magit-mode-map (kbd "M-1") 'delete-other-windows)      ; was magit-show-level-1
+     (define-key magit-mode-map (kbd "<tab>") 'magit-toggle-section)    ; was smart-tab
+     (defun magit-pull ()
+       (interactive)
+       (magit-run-git-async "pull" "--rebase" "-v"))))
+
+;;; org-mode
+
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+
+;; (setq org-agenda-files (list "~/org/home.org"
+;;                              "~/org/inbox.org"
+;;                              "~/org/emacsbook.org"))
+
+(setq org-agenda-files (list "~/org/book/home.org"
+                             "~/org/book/work.org"
+                             "~/org/book/emacsbook.org"))
+
+;; (global-set-key (kbd "C-c r") 'remember)
+;; (add-hook 'remember-mode-hook 'org-remember-apply-template)
+;; (setq org-remember-templates
+;;       '((?n "* %U %?" "~/org/inbox.org")))
+;; (setq remember-annotation-functions '(org-remember-annotation))
+;; (setq remember-handler-functions '(org-remember-handler))
+
+(require 'php-mode)
+;; To use abbrev-mode, add lines like this:
+(add-hook 'php-mode-hook
+          '(lambda () (define-abbrev php-mode-abbrev-table "ex" "extends")))
+
+(defun clean-php-mode ()
+  (interactive)
+  (php-mode)
+  (setq c-basic-offset 2) ; 2 tabs indenting
+  (setq indent-tabs-mode nil)
+  (setq fill-column 78)
+  (c-set-offset 'case-label '+)
+  (c-set-offset 'arglist-close 'c-lineup-arglist-operators))
+(c-set-offset 'arglist-intro '+) ; for FAPI arrays and DBTNG
+(c-set-offset 'arglist-cont-nonempty 'c-lineup-math) ; for DBTNG
+                                        ; fields and values
+
+(add-to-list 'auto-mode-alist '("/drupal.*\.\(php\|module\|inc\|test\|install\)$" . php-mode))
+(add-to-list 'auto-mode-alist '("/drupal.*\.info" . conf-windows-mode))
+
+;; run php lint when press f8 key
+;; php lint
+(defun phplint-thisfile ()
+  (interactive)
+  (compile (format "php -l %s" (buffer-file-name))))
+(add-hook 'php-mode-hook
+          '(lambda ()
+             (local-set-key [f8] 'phplint-thisfile)))
+;; end of php lint
+
+;;; Ruby
+
+;; Run the current ruby buffer
+(defun ruby-eval-buffer ()
+  "Evaluate the buffer with ruby."
+  (interactive)
+  (shell-command-on-region (point-min) (point-max) "ruby"))
+
+;; FIXME: it should be available in next versions of ruby-mode.el
+(defun ruby-insert-end ()
+  (interactive)
+  (insert "end")
+  (ruby-indent-line t)
+  (end-of-line))
+
+;; Local key bindings
+(add-hook 'ruby-mode-hook
+          (lambda ()
+            ;; (ruby-electric-mode)
+            (local-set-key [(control c) (control e)] 'ruby-insert-end)
+            (local-set-key [(control meta f1)] 'xmp)
+            (local-set-key [(control meta shift f1)] 'ruby-eval-buffer)))
+
+(add-to-list 'auto-mode-alist '("Rakefile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Capfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("Guardfile$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("autotest$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("irbrc$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("sake$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("rake$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("god$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("thor$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("gemspec$" . ruby-mode))
+(add-to-list 'auto-mode-alist '("jbuilder$" . ruby-mode))
+
+;; rinari
+(require 'rinari)
+(define-key rinari-minor-mode-map (kbd "C-c t") 'rinari-find-test)
+(define-key rinari-minor-mode-map (kbd "C-c m") 'rinari-find-model)
+(define-key rinari-minor-mode-map (kbd "C-c c") 'rinari-find-controller)
+(define-key rinari-minor-mode-map (kbd "C-c v") 'rinari-find-view)
+
+;; rhtml-mode-hook
+(add-to-list 'load-path "~/.emacs.d/elpa/rhtml")
+(require 'rhtml-mode)
+(add-hook 'rhtml-mode-hook
+          (lambda () (rinari-launch)))
+
+;; binding
+;; Refresh-like
+(global-set-key [(f5)]         'revert-buffer)
+(global-set-key [(control f5)] 'revbufs)
+
+;; Indenting and alignment
+(global-set-key [(f8)]         'indent-region)
+(global-set-key [(control f8)] 'align)
+(global-set-key [(shift f8)]   'align-current)
+(global-set-key [(meta f8)]    'align-regexp)
+
+;; Version control and change related
+;(global-set-key [(control f9)]      'rails-svn-status-into-root)  ;; Move to rails mode?
+;(global-set-key [(control meta f9)] (lambda () (interactive) (svn-status default-directory)))
+(global-set-key [(control f9)] (lambda () (interactive) (magit-status default-directory)))
+(global-set-key [(f9)]         (lambda () (interactive) (magit-status default-directory)))
+(global-set-key [(meta f9)]    'autotest-switch)  ;; Move to ruby/rails mode?
+
+;; map the window manipulation keys to meta 0, 1, 2, o
+(global-set-key (kbd "M-3") 'split-window-horizontally) ; was digit-argument
+(global-set-key (kbd "M-2") 'split-window-vertically) ; was digit-argument
+(global-set-key (kbd "M-1") 'delete-other-windows) ; was digit-argument
+(global-set-key (kbd "M-0") 'delete-window) ; was digit-argument
+(global-set-key (kbd "M-o") 'other-window) ; was facemenu-keymap
+
+(global-set-key (kbd "M-O") 'rotate-windows)
+
+;; Replace dired's M-o
+(add-hook 'dired-mode-hook (lambda () (define-key dired-mode-map (kbd "M-o") 'other-window))) ; was dired-omit-mode
+;; Replace ibuffer's M-o
+(add-hook 'ibuffer-mode-hook (lambda () (define-key ibuffer-mode-map (kbd "M-o") 'other-window))) ; was ibuffer-visit-buffer-1-window
+;; To help Unlearn C-x 0, 1, 2, o
+(global-unset-key (kbd "C-x 3")) ; was split-window-horizontally
+(global-unset-key (kbd "C-x 2")) ; was split-window-vertically
+(global-unset-key (kbd "C-x 1")) ; was delete-other-windows
+(global-unset-key (kbd "C-x 0")) ; was delete-window
+(global-unset-key (kbd "C-x o")) ; was other-window
+
+;; Repeat
+(global-set-key [(control z)] 'repeat) ; was suspend-frame
+
+;; Window navigation
+(windmove-default-keybindings 'meta)
+
+;; Mac OS X conventions
+(global-set-key (kbd "M-a") 'mark-whole-buffer) ; was backward-sentence.
+
+;; Find matching parens
+(global-set-key (kbd "C-'") 'match-paren)
+
+;; Easy inserts
+(global-set-key (kbd "C-.") 'insert-arrow)
+
+;; ibuffer > list-buffers
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+
+;; Easier buffer killing
+(global-unset-key (kbd "M-k"))
+(global-set-key (kbd "M-K") 'kill-this-buffer)
+
+;; Improved navigation and editing (assumes misc.el)
+(global-set-key (kbd "M-Z") 'zap-up-to-char)
+(global-set-key (kbd "M-F") 'forward-to-word)
+(global-set-key (kbd "M-B") 'backward-to-word)
+
+;; Personal textmate.el bindings
+(global-set-key (kbd "C-c f") 'textmate-goto-file)
+(global-set-key [(control return)] 'textmate-next-line)
+
+;; Tags
+(global-set-key (kbd "M-,") 'pop-tag-mark) ; was tags-loop-continue
+
+;;; Markdown
+
+(add-to-list 'auto-mode-alist '("\\.markdown$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("\\.text$" . markdown-mode))
+
+(eval-after-load 'markdown-mode
+  '(progn
+     (define-key markdown-mode-map (kbd "C-c C-v") 'markdown-preview)
+     ))
+;;; It's Magit! An Emacs mode for Git.
+
+(add-hook
+ 'magit-mode-hook
+ (lambda ()
+   (setq yas/dont-activate t)))
+
+(add-hook
+ 'magit-log-edit-mode-hook
+ (lambda ()
+   (setq fill-column 72)
+   (turn-on-auto-fill)))
+
+(eval-after-load 'magit
+  '(progn
+     (set-face-background 'highlight nil) ;; highlight is overriding other background colors for diff chunks
+     (set-face-foreground 'highlight nil) ;; highlight is overriding other foreground colors for diff chunks
+     (set-face-underline  'highlight nil)
+     (define-key magit-mode-map (kbd "M-3") 'split-window-horizontally) ; was magit-show-level-3
+     (define-key magit-mode-map (kbd "M-2") 'split-window-vertically)   ; was magit-show-level-2
+     (define-key magit-mode-map (kbd "M-1") 'delete-other-windows)      ; was magit-show-level-1
+     (define-key magit-mode-map (kbd "<tab>") 'magit-toggle-section)    ; was smart-tab
+     (defun magit-pull ()
+       (interactive)
+       (magit-run-git-async "pull" "--rebase" "-v"))
+     ))
+;;; org-mode
+
+(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+(setq org-log-done t)
+
+;; (setq org-agenda-files (list "~/org/home.org"
+;;                              "~/org/inbox.org"
+;;                              "~/org/emacsbook.org"))
+
+(setq org-agenda-files (list "~/org/book/home.org"
+                             "~/org/book/work.org"
+                             "~/org/book/emacsbook.org"))
+
+;; (global-set-key (kbd "C-c r") 'remember)
+;; (add-hook 'remember-mode-hook 'org-remember-apply-template)
+;; (setq org-remember-templates
+;;       '((?n "* %U %?" "~/org/inbox.org")))
+;; (setq remember-annotation-functions '(org-remember-annotation))
+;; (setq remember-handler-functions '(org-remember-handler))
+
+;;; Tab management
+
+;; Spaces instead of tabs
+(setq-default indent-tabs-mode nil)
+
+;; If there is a tab, make it the size of 2 spaces
+(setq-default tab-width 2)
+
+;; Mode specific indent sizes
+;; TODO: Consider putting these in their own mode specific inits
+(setq c-basic-offset 4)
+(setq css-indent-offset 2)
+(setq sh-basic-offset 2)
+(set-default 'javascript-indent-level 2)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Hippie expand.  Groovy vans with tie-dyes.
+
+(setq hippie-expand-try-functions-list
+      '(yas/hippie-try-expand
+        try-expand-dabbrev
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+        try-complete-file-name
+        try-complete-lisp-symbol))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Smart Tab
+;; Borrowed from snippets at
+;; http://www.emacswiki.org/emacs/TabCompletion
+;; TODO: Take a look at https://github.com/genehack/smart-tab
+
+(defvar smart-tab-using-hippie-expand t
+  "turn this on if you want to use hippie-expand completion.")
+
+(defun smart-tab (prefix)
+  "Needs `transient-mark-mode' to be on. This smart tab is
+  minibuffer compliant: it acts as usual in the minibuffer.
+
+  In all other buffers: if PREFIX is \\[universal-argument], calls
+  `smart-indent'. Else if point is at the end of a symbol,
+  expands it. Else calls `smart-indent'."
+  (interactive "P")
+  (labels ((smart-tab-must-expand (&optional prefix)
+                                  (unless (or (consp prefix)
+                                              mark-active)
+                                    (looking-at "\\_>"))))
+    (cond ((minibufferp)
+           (minibuffer-complete))
+          ((smart-tab-must-expand prefix)
+           (if smart-tab-using-hippie-expand
+               (hippie-expand prefix)
+             (dabbrev-expand prefix)))
+          ((smart-indent)))))
+
+(defun smart-indent ()
+  "Indents region if mark is active, or current line otherwise."
+  (interactive)
+  (if mark-active
+    (indent-region (region-beginning)
+                   (region-end))
+    (indent-for-tab-command)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(global-set-key (kbd "TAB") 'smart-tab)
+
+(add-to-list 'auto-mode-alist '("\\.yml$" . yaml-mode))
+(add-hook 'yaml-mode-hook
+          '(lambda ()
+             (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+
+(setq jabber-account-list '(
+                           ("manulvphp@gmail.com"
+                            ;;   (:password . nil) or (:password . "your-pass")
+                            (:network-server . "talk.google.com")
+                            (:port . 443)
+                            (:connection-type . ssl)))
+)
